@@ -1,0 +1,52 @@
+agent:
+  host:
+    iptables: true
+    port: 8181
+    interface: eni+  # only usedful in EKS environment
+
+  nodeSelector:
+    kubernetes.io/role: node
+  log:
+    level: debug
+  gatewayTimeoutCreation: 1s
+  extraEnv:
+      GRPC_GO_LOG_SEVERITY_LEVEL: debug
+      GRPC_GO_LOG_VERBOSITY_LEVEL: 8
+
+  tlsSecret: kiam-agent-certificate-secret
+  tlsCerts:
+    certFileName: tls.crt
+    keyFileName: tls.key
+    caFileName: ca.crt
+  extraHostPathMounts:
+    - name: ssl-certs
+      mountPath: /etc/ssl/certs
+      # this path could change depending on your hosts OS
+      hostPath: /etc/pki/ca-trust/extracted/pem
+
+server:
+  nodeSelector:
+    kubernetes.io/role: master
+  log:
+    level: debug
+  extraEnv:
+    GRPC_GO_LOG_SEVERITY_LEVEL: debug
+    GRPC_GO_LOG_VERBOSITY_LEVEL: 8
+
+  gatewayTimeoutCreation: 1s
+
+  tlsSecret: kiam-server-certificate-secret
+  tlsCerts:
+    certFileName: tls.crt
+    keyFileName: tls.key
+    caFileName: ca.crt
+  extraHostPathMounts:
+    - name: ssl-certs
+      mountPath: /etc/ssl/certs
+      # this path could change depending on your hosts OS
+      hostPath: /etc/pki/ca-trust/extracted/pem
+
+
+
+
+

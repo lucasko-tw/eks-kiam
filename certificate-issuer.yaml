@@ -1,0 +1,30 @@
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: root-ca-issuer
+  namespace: kiam
+spec:
+  selfSigned: {}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: root-ca-cert
+  namespace: kiam
+spec:
+  secretName: root-ca-cert
+  commonName: root-ca-cert
+  isCA: true
+  issuerRef:
+    name: root-ca-issuer
+    kind: Issuer
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: self-signed-certificate-issuer
+  namespace: kiam
+spec:
+  ca:
+    secretName: root-ca-cert
